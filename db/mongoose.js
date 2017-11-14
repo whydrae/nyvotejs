@@ -8,7 +8,7 @@ mongoose.connect(config.get('mongoose:uri'), {
 var db = mongoose.connection;
 
 db.on('error', (err) => {
-  console.error('Connection error ' + err.message);
+  console.error('Connection error: ' + err.message);
 });
 
 db.once('open', function callback() {
