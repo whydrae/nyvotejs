@@ -1,0 +1,9 @@
+{
+  "port": 8080,
+  "mongoose": {
+    "uri": "mongodb://localhost/AnyDB"
+  },
+  "session": {
+    "secret": "iwonttell"
+  }
+}
