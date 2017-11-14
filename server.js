@@ -10,6 +10,9 @@ var port = process.env.PORT || config.get('port');
 
 var db = require('./db/mongoose');
 
+var users = require('./app/routes/users');
+var santas = require('./app/routes/santas');
+
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
@@ -33,7 +36,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-require('./app/routes.js')(app, passport);
+app.use('/user/', users);
+app.use('/santa/', santas);
 
 app.listen(port, () => {
   console.log('Well, we are here.');
