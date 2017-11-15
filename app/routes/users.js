@@ -1,12 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var mongoose = require('mongoose');
+var ObjectId = mongoose.mongo.ObjectId;
 
 var User = require('../models/user');
 
 router.post('/register', function(req, res) {
   User.register(new User({
-    username: req.body.username
+    username: req.body.username,
+    couple: new ObjectId()
   }), req.body.password, function(err, account) {
     if (err) {
       return res.status(500).json({
@@ -61,6 +64,6 @@ router.get('/status', function(req, res) {
   res.status(200).json({
     status: true
   });
-})
+});
 
 module.exports = router;
