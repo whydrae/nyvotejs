@@ -18,7 +18,7 @@ router.post('/recipient', function (req, res) {
       if (santa) {
         res.json(santa);
       } else {
-        this.getRandomUserForSanta(req.user, function (err, user) {
+        getRandomUserForSanta(req.user, function (err, user) {
           if (err) {
             return res.status(500).json({
               err: err
@@ -71,7 +71,7 @@ router.post('/recipient', function (req, res) {
   }
 });
 
-function getRandomUserForSanta(satna, callback) {
+function getRandomUserForSanta(santa, callback) {
   User.find({
     _id: {
       $ne: santa._id
@@ -82,13 +82,18 @@ function getRandomUserForSanta(satna, callback) {
     }
     if (users) {
       if (users.length > 1) {
+        var i = 0;
         do {
-          var user = items[Math.floor(Math.random() * users.length)];
-        } while (user.couple !== santa._id);
+          i += 1;
+          var user = users[Math.floor(Math.random() * users.length)];
+        } while (user.couple !== santa._id || i < 500);
+        if(!user) {
+          console.log("User not found!");
+        }
       } else {
         user = users[0];
       }
-      callback({}, user);
+      callback(null, user);
     }
   });
 }
