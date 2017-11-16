@@ -9,7 +9,9 @@ var User = require('../models/user');
 router.post('/register', function(req, res) {
   User.register(new User({
     username: req.body.username,
-    couple: new ObjectId()
+    couple: new ObjectId(),
+    name: req.body.name,
+    forname: req.body.forname
   }), req.body.password, function(err, account) {
     if (err) {
       return res.status(500).json({
