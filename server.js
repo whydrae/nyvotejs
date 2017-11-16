@@ -5,6 +5,7 @@ var passport = require('passport');
 var session = require('express-session');
 var config = require('./config');
 var LocalStrategy = require('passport-local').Strategy;
+var path = require('path');
 
 var port = process.env.PORT || config.get('port');
 
@@ -13,8 +14,9 @@ var db = require('./db/mongoose');
 var users = require('./app/routes/users');
 var santas = require('./app/routes/santas');
 
-app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -29,8 +31,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(__dirname + 'public'));
-
 var User = require('./app/models/user');
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -38,6 +38,10 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/user/', users);
 app.use('/santa/', santas);
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, './public', 'index.html'));
+});
 
 app.listen(port, () => {
   console.log('Well, we are here.');

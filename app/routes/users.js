@@ -68,4 +68,15 @@ router.get('/status', function(req, res) {
   });
 });
 
+router.get('/currentUser', function(req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      status: "Not authorized"
+    });
+  }
+  res.status(200).json({
+    user: req.user
+  });
+});
+
 module.exports = router;
