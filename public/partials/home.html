@@ -1,7 +1,30 @@
-<h1>Hi there!</h1>
-<div ng-controller="homeController">
-  <h2>{{UserName}}</h2>
-</div>
-<div ng-controller="logoutController">
-  <a ng-click="logout()">Logout</a>
+<nav class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a href="#/" class="navbar-brand">Home</a>
+  </div>
+  <div id="navbarCollapse" class="collapse navbar-collapse">
+    <ul class="nav navbar-nav navbar-right" ng-controller="logoutController">
+      <li>
+        <a ng-click="logout()">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h1>Hi there, {{UserName}}!</h1>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <button type="button" class="btn btn-primary btn-lg">Find your recipient</button>
+  </div>
 </div>

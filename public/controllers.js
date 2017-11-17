@@ -26,7 +26,7 @@ angular.module('myApp').controller('logoutController', ['$scope', '$location', '
     $scope.logout = function() {
       AuthService.logout()
         .then(function() {
-          $location.path('/login')
+          $location.path('/login');
         });
     };
   }
@@ -36,7 +36,6 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
   function($scope, $location, UserService) {
     UserService.userData()
       .then(function(data) {
-        console.log(data.username);
         $scope.UserName = data.username;
       });
   }

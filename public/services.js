@@ -75,7 +75,6 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
 
 angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
   function($q, $timeout, $http) {
-    var userDataVar;
 
     return ({
       userData: userData

@@ -1,10 +1,10 @@
 var myApp = angular.module('myApp', ['ngRoute']);
 
-myApp.config(function($routeProvider) {
+myApp.config(function ($routeProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'partials/home.html',
-      //controller: 'homeController',
+      controller: 'homeController',
       access: {
         restricted: true
       }
@@ -33,13 +33,14 @@ myApp.config(function($routeProvider) {
     });
 });
 
-myApp.run(function($rootScope, $location, $route, AuthService) {
-  $rootScope.$on('$routeChangeStart', function(event, next, current) {
+myApp.run(function ($rootScope, $location, $route, AuthService) {
+  $rootScope.$on('$routeChangeStart', function (event, next, current) {
     AuthService.getUserStatus()
-      .then(function() {
-        if (next.access.restricted && AuthService.isLoggedIn() === false) {
+      .then(function () {
+        console.log(next);
+        if ((!next.access || next.access.restricted) && AuthService.isLoggedIn() === false) {
           $location.path('/login');
-          $route.reload();
+          //$route.reload();
         }
       });
   });
