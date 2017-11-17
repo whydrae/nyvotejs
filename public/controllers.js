@@ -13,7 +13,7 @@ angular.module('myApp').controller('loginController', ['$scope', '$location', 'A
         })
         .catch(function() {
           $scope.error = true;
-          $scope.errorMessage = "Invalid username or password";
+          $scope.errorMessage = "Введен неправильный пользователь или пароль";
           $scope.disabled = false;
           $scope.loginForm = {};
         });
