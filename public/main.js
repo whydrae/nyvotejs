@@ -4,7 +4,7 @@ myApp.config(function($routeProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'partials/home.html',
-      controller: 'homeController',
+      //controller: 'homeController',
       access: {
         restricted: true
       }

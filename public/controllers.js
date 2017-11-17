@@ -34,11 +34,10 @@ angular.module('myApp').controller('logoutController', ['$scope', '$location', '
 
 angular.module('myApp').controller('homeController', ['$scope', '$location', 'UserService',
   function($scope, $location, UserService) {
-    $scope.home = function() {
-      UserService.userData()
-        .then(function(data) {
-          $scope.UserName = data.username;
-        });
-    };
+    UserService.userData()
+      .then(function(data) {
+        console.log(data.username);
+        $scope.UserName = data.username;
+      });
   }
 ]);

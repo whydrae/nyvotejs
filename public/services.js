@@ -19,16 +19,16 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
 
     function getUserStatus() {
       return $http.get('/user/status')
-      .success(function (data) {
-        if (data.status) {
-          user = true;
-        } else {
+        .success(function(data) {
+          if (data.status) {
+            user = true;
+          } else {
+            user = false;
+          }
+        })
+        .error(function(data) {
           user = false;
-        }
-      })
-      .error(function (data) {
-        user = false;
-      });
+        });
     }
 
     function login(username, password) {
@@ -44,7 +44,7 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
             deffered.resolve();
           } else {
             user = false;
-            deffered.reject;
+            deffered.reject();
           }
         })
         .error(function(data) {
@@ -84,10 +84,9 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
     function userData() {
       var deffered = $q.defer();
 
-      $http.get('/currentUser')
+      $http.get('user/currentUser')
         .success(function(data) {
-          UserDataVar = data;
-          deffered.resolve();
+          deffered.resolve(data.user);
         })
         .error(function(data) {
           deffered.reject();
