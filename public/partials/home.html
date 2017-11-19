@@ -1,4 +1,5 @@
-<nav class="navbar navbar-default">
+<div id="snow" ng-if="showSanta === true"></div>
+<nav class="navbar navbar-inverse">
   <div class="navbar-header">
     <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
       <span class="sr-only">Toggle navigation</span>
@@ -17,14 +18,47 @@
   </div>
 </nav>
 <div class="container-fluid">
-  <div class="row">
+  <div class="row text-center">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h2>{{UserName}}, привет!</h2>
+        <h2><span class="text-danger">{{UserName}}</span><span>, привет!<span></h2>
+        <h2 ng-if="showSanta === false">Похоже, что ты еще не стал Сантой. Самое время это сделать!</h2>
+        <h2 ng-if="showSanta === true"><span>Поздравляю, ты тайный Санта для </span><span class="text-success">{{ForName}}</span>!</h2>
       </div>
     </div>
   </div>
-  <div class="row">
-    <button type="button" class="btn btn-primary btn-lg">Стать Сантой</button>
+  <div class="row" ng-if="showSanta === true">
+    <h3>Пожелания <span class="text-success">{{ForName}}</span> для Санты</h3>
+    <h4 ng-if="forWishes.length === 0">Пока что пожеланий нет...</h4>
+    <table class="table table-striped">
+      <tr ng-repeat="wish in forWishes">
+        <td>{{ wish.wish }}</td>
+      </tr>
+    </table>
   </div>
+  <div class="row text-center" ng-if="showSanta === false">
+    <button type="button" ng-click="becomeSanta()" class="btn btn-primary btn-lg">Стать Сантой</button>
+  </div>
+  <div class="row">
+    <h3>Твои пожелания</h3>
+    <table class="table table-striped">
+      <tr ng-repeat="wish in myWishes">
+        <td>{{ wish.wish }}</td>
+        <td class="text-right">
+          <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="removeWish(wish._id)">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <form name="enterWish" class="text-center">
+      <div class="form-group">
+        <input type="text" class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required>
+      </div>
+      <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
+    </form>
+  </div>
+</div>
+<div class="container">
+  <!-- <div class="flip-clock"></div> -->
 </div>

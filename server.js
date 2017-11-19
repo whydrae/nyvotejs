@@ -13,6 +13,7 @@ var db = require('./db/mongoose');
 
 var users = require('./app/routes/users');
 var santas = require('./app/routes/santas');
+var wishes = require('./app/routes/wishes');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,8 +39,9 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/user/', users);
 app.use('/santa/', santas);
+app.use('/wish/', wishes);
 
-app.get('/', function(req, res) {
+app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, './public', 'index.html'));
 });
 

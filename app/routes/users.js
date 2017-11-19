@@ -79,4 +79,48 @@ router.get('/currentUser', function(req, res) {
   });
 });
 
+router.post('/setCouple', function(req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      status: "Not authorized"
+    });
+  }
+  User.findByIdAndUpdate({
+    _id: req.body.user1_id
+  }, {
+    $set: {
+      couple: req.body.user2_id
+    }
+  }, {
+    new: true
+  }, function(err, user) {
+    if (err) {
+      return res.status(500).json({
+        err: err
+      });
+    }
+    if (user) {
+      User.findByIdAndUpdate({
+          _id: req.body.user2_id
+        }, {
+          $set: {
+            couple: req.body.user1_id
+          }
+        }, {
+          new: true
+        },
+        function(err, user2) {
+          if (err) {
+            return res.status(500).json({
+              err: err
+            });
+          }
+          res.status(200).json({
+            users: [user, user2]
+          });
+        });
+    }
+  });
+});
+
 module.exports = router;

@@ -1,9 +1,46 @@
 var express = require('express');
 var router = express.Router();
-var passport = require('passport');
 
 var Santa = require('../models/santa');
 var User = require('../models/user');
+var Wish = require('../models/wish');
+
+router.get('/recipient', function(req, res) {
+  if (req.isAuthenticated()) {
+    Santa.findOne({
+      'from': req.user._id
+    }, function(err, santa) {
+      if (err) {
+        return res.status(500).json({
+          err: err
+        });
+      }
+      if (santa) {
+        User.findOne({
+            _id: santa.to
+          },
+          function(err, user) {
+            if (err) {
+              return res.status(500).json({
+                err: err
+              });
+            }
+            return res.status(200).json({
+              recipient: user
+            });
+          });
+      } else {
+        return res.status(200).json({
+          err: "You're not a santa!"
+        });
+      }
+    });
+  } else {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+});
 
 router.post('/recipient', function(req, res) {
   if (req.isAuthenticated()) {
@@ -58,6 +95,33 @@ router.post('/recipient', function(req, res) {
   }
 });
 
+router.post('/reset', function(req, res) {
+  if (req.isAuthenticated()) {
+    Santa.remove({}, function(err) {
+      if (err) {
+        return res.status(500).json({
+          err: err
+        });
+      }
+      Wish.remove({}, function(err) {
+        if (err) {
+          return res.status(500).json({
+            err: err
+          });
+        }
+        return res.status(200).json({
+          status: "Success!"
+        });
+      });
+    });
+
+  } else {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+})
+
 function getRandomUserForSanta(santa, callback) {
   Santa.find({
     from: {
@@ -97,15 +161,18 @@ function getRandomUserForSanta(santa, callback) {
             do {
               i = i + 1;
               var user = users[Math.floor(Math.random() * users.length)];
-              if (user.couple !== santa._id) {
-                found = true
+              if (user.couple.equals(santa._id)) {
+                continue;
+              } else {
+                found = true;
+                callback(null, user);
+                break;
               }
-            } while (found = false || i < 500);
+            } while (found === false && i < 500);
             // end magic
           } else {
             user = users[0];
           }
-          callback(null, user);
         }
       });
   });
