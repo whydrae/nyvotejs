@@ -7,7 +7,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a href="#/" class="navbar-brand">Secret Santa 2.0</a>
+    <a href="#" class="navbar-brand">Secret Santa 2.0</a>
   </div>
   <div id="navbarCollapse" class="collapse navbar-collapse">
     <ul class="nav navbar-nav navbar-right" ng-controller="logoutController">
@@ -21,18 +21,24 @@
   <div class="row text-center">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h2><span class="text-danger">{{UserName}}</span><span>, привет!<span></h2>
-        <h2 ng-if="showSanta === false">Похоже, что ты еще не стал Сантой. Самое время это сделать!</h2>
-        <h2 ng-if="showSanta === true"><span>Поздравляю, ты тайный Санта для </span><span class="text-success">{{ForName}}</span>!</h2>
+        <h2>
+          <span class="text-danger">{{UserName}}</span>
+          <span>, привет!</span>
+        </h2>
+        <h2 ng-if="showSanta === false">Похоже, что ты еще не стал(а) Сантой. Самое время это сделать!</h2>
+        <h2 ng-if="showSanta === true">
+          <span>Поздравляю, ты тайный Санта для </span>
+          <span class="text-success">{{ForName}}</span>!</h2>
       </div>
     </div>
   </div>
   <div class="row" ng-if="showSanta === true">
-    <h3>Пожелания <span class="text-success">{{ForName}}</span> для Санты</h3>
+    <h3>Пожелания
+      <span class="text-success">{{ForName}}</span> для Санты</h3>
     <h4 ng-if="forWishes.length === 0">Пока что пожеланий нет...</h4>
     <table class="table table-striped">
       <tr ng-repeat="wish in forWishes">
-        <td>{{ wish.wish }}</td>
+        <td><h4>{{ wish.wish }}</h4></td>
       </tr>
     </table>
   </div>
@@ -43,7 +49,7 @@
     <h3>Твои пожелания</h3>
     <table class="table table-striped">
       <tr ng-repeat="wish in myWishes">
-        <td>{{ wish.wish }}</td>
+        <td><h4>{{ wish.wish }}</h4></td>
         <td class="text-right">
           <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="removeWish(wish._id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -58,7 +64,4 @@
       <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
     </form>
   </div>
-</div>
-<div class="container">
-  <!-- <div class="flip-clock"></div> -->
 </div>
