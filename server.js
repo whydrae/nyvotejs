@@ -46,5 +46,5 @@ app.get('*', function(req, res) {
 });
 
 app.listen(port, () => {
-  console.log('Well, we are here.');
+  console.log('Secret Santa API is running on ' + port);
 });

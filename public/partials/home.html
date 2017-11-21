@@ -22,8 +22,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <h2>
-          <span class="text-danger">{{UserName}}</span>
-          <span>, привет!</span>
+          <span class="text-danger">{{UserName}}</span>, привет!
         </h2>
         <h2 ng-if="showSanta === false">Похоже, что ты еще не стал(а) Сантой. Самое время это сделать!</h2>
         <h2 ng-if="showSanta === true">
@@ -51,7 +50,7 @@
       <tr ng-repeat="wish in myWishes">
         <td><h4>{{ wish.wish }}</h4></td>
         <td class="text-right">
-          <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="removeWish(wish._id)">
+          <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
         </td>

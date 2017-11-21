@@ -1,8 +1,10 @@
 var mongoose = require('mongoose');
 var config = require('../config.js');
 
+mongoose.Promise = Promise;
 mongoose.connect(config.get('mongoose:uri'), {
-  useMongoClient: true
+  useMongoClient: true,
+  promiseLibrary: global.Promise
 });
 
 var db = mongoose.connection;
