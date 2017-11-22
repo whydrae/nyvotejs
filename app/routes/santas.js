@@ -123,6 +123,32 @@ router.post('/reset', function (req, res) {
   }
 });
 
+router.post('/check', function (req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+
+  Santa.find({}, function (err, santas) {
+    for (var i = 0; i < santas.length; i++) {
+      var santa = santas[i];
+      User.findById({
+        _id: santa.from
+      }, function (err, user) {
+        if (user.couple.equals(santa.to)) {
+          return res.status(500).json({
+            status: "Couple found!"
+          });
+        }
+      });
+    }
+    return res.status(200).json({
+      status: "Success! Count: " + santas.length
+    });
+  });
+});
+
 function getRandomUserForSanta(santa, callback) {
   Santa.find({}, function (err, santas) {
     // searching for users than already have santa
