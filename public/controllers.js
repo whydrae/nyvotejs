@@ -46,12 +46,17 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
     $scope.becomeSanta = function () {
       UserService.becomeSanta()
         .then(function (data) {
+          $scope.santaError = false;
           if (data) {
             $scope.showSanta = true;
             setSantaScope();
           } else {
             $scope.showSanta = false;
           }
+        })
+        .catch(function () {
+            $scope.santaErrorMessage = "Не удалось стать Сантой! Ты остался один :-(";
+            $scope.santaError = true;
         });
     };
 

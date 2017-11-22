@@ -17,6 +17,9 @@
     </ul>
   </div>
 </nav>
+<div class="alert alert-danger" ng-if="santaError === true">
+  <strong>Ошибка!</strong> {{ santaErrorMessage }}
+</div>
 <div class="container-fluid">
   <div class="row text-center">
     <div class="panel panel-default">
@@ -37,7 +40,8 @@
     <h4 ng-if="forWishes.length === 0">Пока что пожеланий нет...</h4>
     <table class="table table-striped">
       <tr ng-repeat="wish in forWishes">
-        <td><h4>{{ wish.wish }}</h4></td>
+        <td>
+          <h4>{{ wish.wish }}</h4></td>
       </tr>
     </table>
   </div>
@@ -48,7 +52,8 @@
     <h3>Твои пожелания</h3>
     <table class="table table-striped">
       <tr ng-repeat="wish in myWishes">
-        <td><h4>{{ wish.wish }}</h4></td>
+        <td>
+          <h4>{{ wish.wish }}</h4></td>
         <td class="text-right">
           <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>

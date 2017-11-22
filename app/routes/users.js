@@ -85,41 +85,63 @@ router.post('/setCouple', function(req, res) {
       status: "Not authorized"
     });
   }
-  User.findByIdAndUpdate({
-    _id: req.body.user1_id
-  }, {
-    $set: {
-      couple: req.body.user2_id
-    }
-  }, {
-    new: true
-  }, function(err, user) {
+
+  // User 1
+  User.findOne({
+    username: req.body.user1
+  }, function(err, userFound1) {
     if (err) {
       return res.status(500).json({
         err: err
       });
     }
-    if (user) {
-      User.findByIdAndUpdate({
-          _id: req.body.user2_id
-        }, {
-          $set: {
-            couple: req.body.user1_id
-          }
-        }, {
-          new: true
-        },
-        function(err, user2) {
-          if (err) {
-            return res.status(500).json({
-              err: err
-            });
-          }
-          res.status(200).json({
-            users: [user, user2]
-          });
+    // User 2
+    User.findOne({
+      username: req.body.user2
+    }, function(err, userFound2) {
+      if (err) {
+        return res.status(500).json({
+          err: err
         });
-    }
+      }
+      // Set couples
+      User.findByIdAndUpdate({
+        _id: userFound1._id
+      }, {
+        $set: {
+          couple: userFound2._id
+        }
+      }, {
+        new: true
+      }, function(err, user) {
+        if (err) {
+          return res.status(500).json({
+            err: err
+          });
+        }
+        if (user) {
+          User.findByIdAndUpdate({
+              _id: userFound2._id
+            }, {
+              $set: {
+                couple: userFound1._id
+              }
+            }, {
+              new: true
+            },
+            function(err, user2) {
+              if (err) {
+                return res.status(500).json({
+                  err: err
+                });
+              }
+              res.status(200).json({
+                users: [user, user2]
+              });
+            });
+        }
+      });
+    });
   });
 });
 

@@ -100,7 +100,6 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
 
     function becomeSanta() {
       var deferred = $q.defer();
-
       $http.post('santa/recipient')
         .success(function(data) {
           deffered.resolve(data);

@@ -5,11 +5,11 @@ var Santa = require('../models/santa');
 var User = require('../models/user');
 var Wish = require('../models/wish');
 
-router.get('/recipient', function (req, res) {
+router.get('/recipient', function(req, res) {
   if (req.isAuthenticated()) {
     Santa.findOne({
       'from': req.user._id
-    }, function (err, santa) {
+    }, function(err, santa) {
       if (err) {
         return res.status(500).json({
           err: err
@@ -19,7 +19,7 @@ router.get('/recipient', function (req, res) {
         User.findOne({
             _id: santa.to
           },
-          function (err, user) {
+          function(err, user) {
             if (err) {
               return res.status(500).json({
                 err: err
@@ -42,33 +42,32 @@ router.get('/recipient', function (req, res) {
   }
 });
 
-router.post('/recipient', function (req, res) {
+router.post('/recipient', function(req, res) {
   if (req.isAuthenticated()) {
     Santa.findOne({
       'from': req.user._id
-    }, function (err, santa) {
+    }, function(err, santa) {
       if (err) {
         return res.status(500).json({
           err: err
         });
       }
       if (santa) {
-        res.json(santa);
+        return res.status(200).json({
+          recipient: santa
+        });
       } else {
-        getRandomUserForSanta(req.user, function (err, user) {
+        getRandomUserForSanta(req.user, function(err, user) {
           if (err) {
             return res.status(500).json({
               err: err
             });
           }
           if (user) {
-            // return res.status(200).json({
-            //   recipient: user
-            // });
             Santa.create({
               from: req.user._id,
               to: user._id
-            }, function (err, recipient) {
+            }, function(err, recipient) {
               if (err) {
                 return res.status(500).json({
                   err: err
@@ -82,7 +81,9 @@ router.post('/recipient', function (req, res) {
             });
           } else {
             return res.status(500).json({
-              err: "User was not found"
+              err: {
+                err: "User was not found"
+              }
             });
           }
         });
@@ -95,15 +96,15 @@ router.post('/recipient', function (req, res) {
   }
 });
 
-router.post('/reset', function (req, res) {
+router.post('/reset', function(req, res) {
   if (req.isAuthenticated()) {
-    Santa.remove({}, function (err) {
+    Santa.remove({}, function(err) {
       if (err) {
         return res.status(500).json({
           err: err
         });
       }
-      Wish.remove({}, function (err) {
+      Wish.remove({}, function(err) {
         if (err) {
           return res.status(500).json({
             err: err
@@ -120,20 +121,22 @@ router.post('/reset', function (req, res) {
       err: "Unauthorized"
     });
   }
-})
+});
 
 function getRandomUserForSanta(santa, callback) {
-  Santa.find({
-    from: {
-      $ne: santa._id
-    },
-  }, function (err, santas) {
+  Santa.find({}, function(err, santas) {
     // searching for users than already have santa
     var haveSanta = [];
     if (santas) {
-      haveSanta = santas.map(function (santaFound) {
+      haveSanta = santas.map(function(santaFound) {
         return santaFound.to;
       });
+      // santa <> from
+      // santas.forEach(function(santaEach) {
+      //   if (santaEach.to.equals(santa._id)) {
+      //     haveSanta.push(santaEach.from);
+      //   }
+      // });
     }
 
     User.find({
@@ -149,29 +152,52 @@ function getRandomUserForSanta(santa, callback) {
           }
         ]
       },
-      function (err, users) {
+      function(err, users) {
         if (err) {
           return callback(err);
         }
         if (users) {
+          var user = null;
+
           if (users.length > 1) {
-            var i = 0;
-            var found = false;
-            // magic
-            do {
-              i = i + 1;
-              var user = users[Math.floor(Math.random() * users.length)];
-              if (user.couple.equals(santa._id)) {
-                continue;
-              } else {
-                found = true;
-                break;
+            // last user has no santa, nor recipient
+            if (users.length === 2) {
+              for (var i = 0; i < users.length; i++) {
+                var userLast = users[i];
+                var found = false;
+
+                for (var j = 0; j < santas.length; j++) {
+                  if (santas[j].from.equals(userLast._id)) {
+                    found = true;
+                  }
+                }
+
+                if (found === false) {
+                  user = userLast;
+                }
               }
-            } while (found === false && i < 500);
+            }
+
+            if (user === null) {
+              var i = 0;
+              var found = false;
+              // magic
+              do {
+                i = i + 1;
+                user = users[Math.floor(Math.random() * users.length)];
+                if (user.couple.equals(santa._id)) {
+                  continue;
+                } else {
+                  found = true;
+                  break;
+                }
+              } while (found === false && i < 500);
+            }
             // end magic
           } else {
             user = users[0];
           }
+
           callback(null, user);
         }
       });
