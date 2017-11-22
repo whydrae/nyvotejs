@@ -41,7 +41,8 @@
     <table class="table table-striped">
       <tr ng-repeat="wish in forWishes">
         <td>
-          <h4>{{ wish.wish }}</h4></td>
+          <h4>{{ wish.wish }}</h4>
+        </td>
       </tr>
     </table>
   </div>
@@ -53,8 +54,9 @@
     <table class="table table-striped">
       <tr ng-repeat="wish in myWishes">
         <td>
-          <h4>{{ wish.wish }}</h4></td>
-        <td class="text-right">
+          <h4>{{ wish.wish }}</h4>
+        </td>
+        <td class="text-right" width="20%">
           <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
@@ -63,9 +65,10 @@
     </table>
     <form name="enterWish" class="text-center">
       <div class="form-group">
-        <input type="text" class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required>
+        <textarea class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required></textarea>
       </div>
-      <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
+        <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
+        <div class="help-block"></div>
     </form>
   </div>
 </div>
