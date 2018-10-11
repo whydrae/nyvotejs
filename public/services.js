@@ -32,7 +32,7 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
     }
 
     function login(username, password) {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.post('/user/login', {
           username: username,
@@ -41,42 +41,40 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
         .success(function(data, status) {
           if (status === 200 && data.status) {
             user = true;
-            deffered.resolve();
+            deferred.resolve();
           } else {
             user = false;
-            deffered.reject();
+            deferred.reject();
           }
         })
         .error(function(data) {
           user = false;
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function logout() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('/user/logout')
         .success(function(data) {
           user = false;
-          deffered.resolve();
+          deferred.resolve();
         })
         .error(function(data) {
           user = false;
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
   }
 ]);
 
 angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
   function($q, $timeout, $http) {
-    var santa = false;
-
     return ({
       userData: userData,
       becomeSanta: becomeSanta,
@@ -85,84 +83,64 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
     });
 
     function userData() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('user/currentUser')
         .success(function(data) {
-          deffered.resolve(data.user);
+          deferred.resolve(data.user);
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function becomeSanta() {
       var deferred = $q.defer();
       $http.post('santa/recipient')
         .success(function(data) {
-          deffered.resolve(data);
+          deferred.resolve(data);
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function getSantaFor() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('santa/recipient')
         .success(function(data) {
           if (data.recipient) {
-            santa = true;
-            deffered.resolve(data.recipient);
+            deferred.resolve(data.recipient);
           }
         })
         .error(function(data) {
-          santa = false;
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function isSanta() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('santa/recipient')
         .success(function(data) {
           if (data.recipient) {
-            santa = true;
-            deffered.resolve(true);
+            deferred.resolve(true);
           } else {
-            deffered.resolve(false);
+            deferred.resolve(false);
           }
         })
         .error(function(data) {
-          santa = false;
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
-    }
-
-    function becomeSanta() {
-      var deffered = $q.defer();
-
-      $http.post('santa/recipient')
-        .success(function(data) {
-          santa = true;
-          deffered.resolve(data.recipient);
-        })
-        .error(function(data) {
-          santa = false;
-          deffered.reject();
-        });
-
-      return deffered.promise;
+      return deferred.promise;
     }
   }
 ]);
@@ -180,58 +158,58 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
     });
 
     function getMyWishes() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('wish/my')
         .success(function(data) {
-          deffered.resolve(data.wishes)
+          deferred.resolve(data.wishes)
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function getForWishes() {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.get('wish/for')
         .success(function(data) {
-          deffered.resolve(data.wishes)
+          deferred.resolve(data.wishes)
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function addWish(wishText) {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
       $http.post('wish/', wishText)
         .success(function(data) {
-          deffered.resolve(data.wishes)
+          deferred.resolve(data.wishes)
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
 
     function removeWish(id) {
-      var deffered = $q.defer();
+      var deferred = $q.defer();
 
       $http.delete('wish/' + id)
         .success(function(data) {
-          deffered.resolve(data.wishes)
+          deferred.resolve(data.wishes)
         })
         .error(function(data) {
-          deffered.reject();
+          deferred.reject();
         });
 
-      return deffered.promise;
+      return deferred.promise;
     }
   }
 ]);
