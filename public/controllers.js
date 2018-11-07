@@ -55,8 +55,8 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
           }
         })
         .catch(function () {
-            $scope.santaErrorMessage = "Не удалось стать Сантой! Ты остался один :-(";
-            $scope.santaError = true;
+          $scope.santaErrorMessage = "Не удалось стать Сантой! Ты остался один :-(";
+          $scope.santaError = true;
         });
     };
 

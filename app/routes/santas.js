@@ -5,137 +5,136 @@ var Santa = require('../models/santa');
 var User = require('../models/user');
 var Wish = require('../models/wish');
 
-router.get('/recipient', function(req, res) {
-  if (req.isAuthenticated()) {
-    Santa.findOne({
-      'from': req.user._id
-    }, function(err, santa) {
-      if (err) {
-        return res.status(500).json({
-          err: err
-        });
-      }
-      if (santa) {
-        User.findOne({
-            _id: santa.to
-          },
-          function(err, user) {
-            if (err) {
-              return res.status(500).json({
-                err: err
-              });
-            }
-            return res.status(200).json({
-              recipient: user
-            });
-          });
-      } else {
-        return res.status(200).json({
-          err: "You're not a santa!"
-        });
-      }
-    });
-  } else {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-});
-
-router.post('/recipient', function(req, res) {
-  if (req.isAuthenticated()) {
-    Santa.findOne({
-      'from': req.user._id
-    }, function(err, santa) {
-      if (err) {
-        return res.status(500).json({
-          err: err
-        });
-      }
-      if (santa) {
-        return res.status(200).json({
-          recipient: santa
-        });
-      } else {
-        getRandomUserForSanta(req.user, function(err, user) {
-          if (err) {
-            return res.status(500).json({
-              err: err
-            });
-          }
-          if (user) {
-            Santa.create({
-              from: req.user._id,
-              to: user._id
-            }, function(err, recipient) {
-              if (err) {
-                return res.status(500).json({
-                  err: err
-                });
-              }
-              if (recipient) {
-                return res.status(200).json({
-                  recipient: recipient
-                });
-              }
-            });
-          } else {
-            return res.status(500).json({
-              err: {
-                err: "User was not found"
-              }
-            });
-          }
-        });
-      }
-    });
-  } else {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-});
-
-router.post('/reset', function(req, res) {
-  if (req.isAuthenticated()) {
-    Santa.remove({}, function(err) {
-      if (err) {
-        return res.status(500).json({
-          err: err
-        });
-      }
-      Wish.remove({}, function(err) {
-        if (err) {
-          return res.status(500).json({
-            err: err
-          });
-        }
-        return res.status(200).json({
-          status: "Success!"
-        });
-      });
-    });
-
-  } else {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-});
-
-router.post('/check', function(req, res) {
+router.get('/recipient', function (req, res) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({
       err: "Unauthorized"
     });
   }
 
-  Santa.find({}, function(err, santas) {
+  Santa.findOne({
+    'from': req.user._id
+  }, function (err, santa) {
+    if (err) {
+      return res.status(500).json({
+        err: err
+      });
+    }
+    if (santa) {
+      User.findOne({
+        _id: santa.to
+      },
+        function (err, user) {
+          if (err) {
+            return res.status(500).json({
+              err: err
+            });
+          }
+          return res.status(200).json({
+            recipient: user
+          });
+        });
+    } else {
+      return res.status(200).json({
+        err: "You're not a santa!"
+      });
+    }
+  });
+});
+
+router.post('/recipient', function (req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+
+  Santa.findOne({
+    'from': req.user._id
+  }, function (err, santa) {
+    if (err) {
+      return res.status(500).json({
+        err: err
+      });
+    }
+    if (santa) {
+      return res.status(200).json({
+        recipient: santa
+      });
+    } else {
+      getRandomUserForSanta(req.user, function (err, user) {
+        if (err) {
+          return res.status(500).json({
+            err: err
+          });
+        }
+        if (user) {
+          Santa.create({
+            from: req.user._id,
+            to: user._id
+          }, function (err, recipient) {
+            if (err) {
+              return res.status(500).json({
+                err: err
+              });
+            }
+            if (recipient) {
+              return res.status(200).json({
+                recipient: recipient
+              });
+            }
+          });
+        } else {
+          return res.status(500).json({
+            err: {
+              err: "User was not found"
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post('/reset', function (req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+
+  Santa.remove({}, function (err) {
+    if (err) {
+      return res.status(500).json({
+        err: err
+      });
+    }
+    Wish.remove({}, function (err) {
+      if (err) {
+        return res.status(500).json({
+          err: err
+        });
+      }
+      return res.status(200).json({
+        status: "Success!"
+      });
+    });
+  });
+});
+
+router.post('/check', function (req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({
+      err: "Unauthorized"
+    });
+  }
+
+  Santa.find({}, function (err, santas) {
     for (var i = 0; i < santas.length; i++) {
       var santa = santas[i];
       User.findById({
         _id: santa.from
-      }, function(err, user) {
+      }, function (err, user) {
         if (user.couple.equals(santa.to)) {
           return res.status(500).json({
             status: "Couple found!"
@@ -150,11 +149,11 @@ router.post('/check', function(req, res) {
 });
 
 function getRandomUserForSanta(santa, callback) {
-  Santa.find({}, function(err, santas) {
+  Santa.find({}, function (err, santas) {
     // searching for users than already have santa
     var haveSanta = [];
     if (santas) {
-      haveSanta = santas.map(function(santaFound) {
+      haveSanta = santas.map(function (santaFound) {
         return santaFound.to;
       });
       // santa <> from
@@ -166,19 +165,19 @@ function getRandomUserForSanta(santa, callback) {
     }
 
     User.find({
-        $and: [{
-            _id: {
-              $ne: santa._id
-            }
-          },
-          {
-            _id: {
-              $nin: haveSanta
-            }
-          }
-        ]
+      $and: [{
+        _id: {
+          $ne: santa._id
+        }
       },
-      function(err, users) {
+      {
+        _id: {
+          $nin: haveSanta
+        }
+      }
+      ]
+    },
+      function (err, users) {
         if (err) {
           return callback(err);
         }

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Wish = new Schema({
-  from: { type: Schema.Types.ObjectId, ref: 'users'},
+  from: { type: Schema.Types.ObjectId, ref: 'users' },
   wish: { type: String }
 });
 

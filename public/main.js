@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp', ['ngRoute']);
 
-myApp.config(function($routeProvider, $locationProvider) {
+myApp.config(function ($routeProvider, $locationProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'partials/home.html',
@@ -29,13 +29,13 @@ myApp.config(function($routeProvider, $locationProvider) {
       redirectTo: '/'
     });
 
-    $locationProvider.html5Mode(true);
+  $locationProvider.html5Mode(true);
 });
 
-myApp.run(function($rootScope, $location, $route, AuthService) {
-  $rootScope.$on('$routeChangeStart', function(event, next, current) {
+myApp.run(function ($rootScope, $location, $route, AuthService) {
+  $rootScope.$on('$routeChangeStart', function (event, next, current) {
     AuthService.getUserStatus()
-      .then(function() {
+      .then(function () {
         if ((!next.access || next.access.restricted) && AuthService.isLoggedIn() === false) {
           $location.path('/login');
           $route.reload();
@@ -44,18 +44,18 @@ myApp.run(function($rootScope, $location, $route, AuthService) {
   });
 });
 
-var checkLogin = function($location, $q, AuthService) {
+var checkLogin = function ($location, $q, AuthService) {
   var deferred = $q.defer();
 
   AuthService.getUserStatus()
-    .then(function() {
+    .then(function () {
       if (AuthService.isLoggedIn() === false) {
         deferred.reject();
         $location.path('/login');
       } else {
         deferred.resolve(true);
       }
-    }, function(err) {
+    }, function (err) {
       deferred.reject();
       $location.path('/login');
     });

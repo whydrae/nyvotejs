@@ -41,7 +41,7 @@ app.use('/user/', users);
 app.use('/santa/', santas);
 app.use('/wish/', wishes);
 
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, './public', 'index.html'));
 });
 
