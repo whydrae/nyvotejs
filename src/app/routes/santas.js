@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var Santa = require('../models/santa');
-var User = require('../models/user');
-var Wish = require('../models/wish');
+const Santa = require('../models/santa');
+const User = require('../models/user');
+const Wish = require('../models/wish');
 
 router.get('/recipient', function (req, res) {
   if (!req.isAuthenticated()) {

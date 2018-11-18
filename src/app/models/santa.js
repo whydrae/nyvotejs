@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var Santa = new Schema({
+const Santa = new Schema({
   from: { type: Schema.Types.ObjectId, ref: 'users' },
   to: { type: Schema.Types.ObjectId, ref: 'users' }
 });

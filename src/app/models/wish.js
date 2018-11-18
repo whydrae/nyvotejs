@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var Wish = new Schema({
+const Wish = new Schema({
   from: { type: Schema.Types.ObjectId, ref: 'users' },
   wish: { type: String }
 });

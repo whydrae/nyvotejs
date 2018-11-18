@@ -1,19 +1,19 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var passport = require('passport');
-var session = require('express-session');
-var config = require('./config');
-var LocalStrategy = require('passport-local').Strategy;
-var path = require('path');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const session = require('express-session');
+const config = require('./config');
+const LocalStrategy = require('passport-local').Strategy;
+const path = require('path');
 
-var port = process.env.PORT || config.get('port');
+const port = process.env.PORT || config.get('port');
 
-var db = require('./db/mongoose');
+const db = require('./db/mongoose');
 
-var users = require('./app/routes/users');
-var santas = require('./app/routes/santas');
-var wishes = require('./app/routes/wishes');
+const users = require('./app/routes/users');
+const santas = require('./app/routes/santas');
+const wishes = require('./app/routes/wishes');
 
 app.use(express.static(path.join(__dirname, 'public')));
 

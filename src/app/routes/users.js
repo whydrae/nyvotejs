@@ -3,28 +3,36 @@ var router = express.Router();
 var passport = require('passport');
 var mongoose = require('mongoose');
 var ObjectId = mongoose.mongo.ObjectId;
+var config = require('../../config.js');
 
 var User = require('../models/user');
 
 router.post('/register', function (req, res) {
-  User.register(new User({
-    username: req.body.username,
-    couple: new ObjectId(),
-    name: req.body.name,
-    forname: req.body.forname
-  }), req.body.password, function (err, account) {
-    if (err) {
-      return res.status(500).json({
-        err: err
-      });
-    }
+  const secret = config.get("admin:secret");
+  if (req.body.secret && req.body.secret === secret) {
+    User.register(new User({
+      username: req.body.username,
+      couple: new ObjectId(),
+      name: req.body.name,
+      forname: req.body.forname
+    }), req.body.password, function (err, account) {
+      if (err) {
+        return res.status(500).json({
+          err: err
+        });
+      }
 
-    passport.authenticate('local')(req, res, function () {
-      return res.status(200).json({
-        status: 'Registration successful!'
+      passport.authenticate('local')(req, res, function () {
+        return res.status(200).json({
+          status: 'Registration successful!'
+        });
       });
     });
-  });
+  } else {
+    return res.status(401).json({
+      status: "Not authorized"
+    });
+  }
 });
 
 router.post('/login', function (req, res, next) {
