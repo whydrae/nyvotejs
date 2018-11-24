@@ -5,5 +5,8 @@
   },
   "session": {
     "secret": "iwonttell"
+  },
+  "admin": {
+    "secret": "iwonttell"
   }
 }
