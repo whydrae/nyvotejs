@@ -23,55 +23,65 @@ printf "\n"
 
 names=${array[@]}
 
-curl -c mycookie -H "Accept: application/json" -H \
+echo "\n Reset results"
+
+content=$(curl -s -c mycookie -H "Accept: application/json" -H \
 "Content-type: application/json" -X POST \
 -d '{"username": "ilya", "password": "testpwd"}' \
-http://localhost:8080/user/login
+http://localhost:8080/user/login)
+echo $content | jq .status
 
-curl -b mycookie -H "Accept: application/json" -H \
+content=$(curl -s -b mycookie -H "Accept: application/json" -H \
 "Content-type: application/json" -X POST \
-http://localhost:8080/santa/reset
+http://localhost:8080/santa/reset)
+echo $content | jq .status
 
-curl -H "Accept: application/json" -H \
+content=$(curl -s -H "Accept: application/json" -H \
 "Content-type: application/json" -X GET \
-http://localhost:8080/user/logout
+http://localhost:8080/user/logout)
+echo $content | jq .status
 
 for name in $names
 do
   echo "\n" $name
 
-  curl -c mycookie -H "Accept: application/json" -H \
+  content=$(curl -s -c mycookie -H "Accept: application/json" -H \
   "Content-type: application/json" -X POST \
   -d '{"username": "'$name'", "password": "testpwd"}' \
-  http://localhost:8080/user/login
+  http://localhost:8080/user/login)
+  echo $content | jq .status
 
-  echo "\n"
-
-  curl -b mycookie -H "Accept: application/json" -H \
+  content=$(curl -s -b mycookie -H "Accept: application/json" -H \
   "Content-type: application/json" -X POST \
-  http://localhost:8080/santa/recipient
+  http://localhost:8080/santa/recipient)
+  echo $content | jq .status
 
-  curl -b mycookie -H "Accept: application/json" -H \
+  content=$(curl -s -b mycookie -H "Accept: application/json" -H \
   "Content-type: application/json" -X GET \
-  http://localhost:8080/santa/recipient
+  http://localhost:8080/santa/recipient)
+  echo $content | jq .recipient.username
 
-  echo "\n"
-
-  curl -b mycookie -H "Accept: application/json" -H \
+  content=$(curl -s -b mycookie -H "Accept: application/json" -H \
   "Content-type: application/json" -X GET \
-  http://localhost:8080/user/logout
+  http://localhost:8080/user/logout)
+  echo $content | jq .status
 
 done
 
-# curl -c mycookie -H "Accept: application/json" -H \
-# "Content-type: application/json" -X POST \
-# -d '{"username": "ilya", "password": "testpwd"}' \
-# http://localhost:8080/user/login
-#
-# curl -b mycookie -H "Accept: application/json" -H \
-# "Content-type: application/json" -X POST \
-# http://localhost:8080/santa/check
-#
-# curl -b mycookie -H "Accept: application/json" -H \
-# "Content-type: application/json" -X GET \
-# http://localhost:8080/user/logout
+echo "\n Check results"
+
+content=$(curl -s -c mycookie -H "Accept: application/json" -H \
+"Content-type: application/json" -X POST \
+-d '{"username": "ilya", "password": "testpwd"}' \
+http://localhost:8080/user/login)
+echo $content | jq .status
+
+content=$(curl -s -b mycookie -H "Accept: application/json" -H \
+"Content-type: application/json" -X POST \
+http://localhost:8080/santa/check)
+echo $content | jq .status
+
+content=$(curl -s -b mycookie -H "Accept: application/json" -H \
+"Content-type: application/json" -X GET \
+http://localhost:8080/user/logout)
+echo $content | jq .status
