@@ -62,3 +62,16 @@ do
   http://localhost:8080/user/logout
 
 done
+
+# curl -c mycookie -H "Accept: application/json" -H \
+# "Content-type: application/json" -X POST \
+# -d '{"username": "ilya", "password": "testpwd"}' \
+# http://localhost:8080/user/login
+#
+# curl -b mycookie -H "Accept: application/json" -H \
+# "Content-type: application/json" -X POST \
+# http://localhost:8080/santa/check
+#
+# curl -b mycookie -H "Accept: application/json" -H \
+# "Content-type: application/json" -X GET \
+# http://localhost:8080/user/logout

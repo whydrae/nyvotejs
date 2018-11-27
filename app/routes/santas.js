@@ -5,7 +5,7 @@ const Santa = require('../models/santa');
 const User = require('../models/user');
 const Wish = require('../models/wish');
 
-router.get('/recipient', function (req, res) {
+router.get('/recipient', function(req, res) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({
       err: "Unauthorized"
@@ -39,7 +39,7 @@ router.get('/recipient', function (req, res) {
     }))
 });
 
-router.post('/recipient', function (req, res) {
+router.post('/recipient', function(req, res) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({
       err: "Unauthorized"
@@ -55,7 +55,7 @@ router.post('/recipient', function (req, res) {
           recipient: santa
         });
       } else {
-        getRandomUserForSanta(req.user, function (err, user) {
+        getRandomUserForSanta(req.user, function(err, user) {
           if (err) {
             return res.status(500).json({
               err: err
@@ -91,7 +91,7 @@ router.post('/recipient', function (req, res) {
     }))
 });
 
-router.post('/reset', function (req, res) {
+router.post('/reset', function(req, res) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({
       err: "Unauthorized"
@@ -108,19 +108,19 @@ router.post('/reset', function (req, res) {
     }))
 });
 
-router.post('/check', function (req, res) {
+router.post('/check', function(req, res) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({
       err: "Unauthorized"
     });
   }
 
-  Santa.find({}, function (err, santas) {
+  Santa.find({}, function(err, santas) {
     for (var i = 0; i < santas.length; i++) {
       var santa = santas[i];
       User.findById({
         _id: santa.from
-      }, function (err, user) {
+      }, function(err, user) {
         if (user.couple.equals(santa.to)) {
           return res.status(500).json({
             status: "Couple found!"
@@ -128,18 +128,18 @@ router.post('/check', function (req, res) {
         }
       });
     }
-    return res.status(200).json({
-      status: "Success! Count: " + santas.length
-    });
+    // return res.status(200).json({
+    //   status: "Success! Count: " + santas.length
+    // });
   });
 });
 
 function getRandomUserForSanta(santa, callback) {
-  Santa.find({}, function (err, santas) {
+  Santa.find({}, function(err, santas) {
     // searching for users than already have santa
     var haveSanta = [];
     if (santas) {
-      haveSanta = santas.map(function (santaFound) {
+      haveSanta = santas.map(function(santaFound) {
         return santaFound.to;
       });
     }
@@ -157,7 +157,7 @@ function getRandomUserForSanta(santa, callback) {
           }
         ]
       },
-      function (err, users) {
+      function(err, users) {
         if (err) {
           return callback(err);
         }
@@ -166,27 +166,28 @@ function getRandomUserForSanta(santa, callback) {
 
           // there's only one user left
           if (users.length === 1) {
-            callback(null, user);
+            callback(null, users[0]);
             return;
           }
 
           // last user has no santa, nor recipient
           if (users.length === 2) {
-            let found = false;
-
             for (var i = 0; i < users.length; i++) {
-              var lastUser = users[i];
+              var userLast = users[i];
+              let found = false;
 
               for (var j = 0; j < santas.length; j++) {
-                if (santas[j].from.equals(lastUser._id)) {
+                if (santas[j].from.equals(userLast._id)) {
                   found = true;
                 }
               }
-            }
 
-            if (!found) {
-              callback(null, lastUser);
-              return;
+              if (!found) {
+                user = userLast;
+              }
+            }
+            if (user) {
+              callback(null, user);
             }
           }
 
@@ -199,7 +200,7 @@ function getRandomUserForSanta(santa, callback) {
               continue;
             }
             break;
-          } while (stopNumber > 500);
+          } while (stopNumber < 500);
 
           callback(null, user);
         }
