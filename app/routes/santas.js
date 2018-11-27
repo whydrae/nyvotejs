@@ -71,6 +71,12 @@ router.post('/recipient', function(req, res) {
                   return res.status(200).json({
                     recipient: recipient
                   });
+                } else {
+                  return res.status(500).json({
+                    err: {
+                      err: "User was not found"
+                    }
+                  });
                 }
               })
               .catch((err) => res.status(500).json({
@@ -98,8 +104,8 @@ router.post('/reset', function(req, res) {
     });
   }
 
-  Santa.remove({})
-    .then(() => Wish.remove({}))
+  Santa.deleteMany({})
+    .then(() => Wish.deleteMany({}))
     .then(() => res.status(200).json({
       status: "Success!"
     }))
@@ -115,97 +121,129 @@ router.post('/check', function(req, res) {
     });
   }
 
-  Santa.find({}, function(err, santas) {
-    for (var i = 0; i < santas.length; i++) {
-      var santa = santas[i];
-      User.findById({
-        _id: santa.from
-      }, function(err, user) {
-        if (user.couple.equals(santa.to)) {
-          return res.status(500).json({
-            status: "Couple found!"
-          });
-        }
+  var resolveLen = 0;
+  var santasLen = 0;
+
+  var oWait = new Promise((resolve, reject) => {
+    let found = false;
+    Santa.find({}, function(err, santas) {
+      santasLen = santas.length;
+      for (var i = 0; i < santas.length; i++) {
+        var santa = santas[i];
+        User.findOne({
+          $and: [{
+              _id: {
+                $eq: santa.from
+              }
+            },
+            {
+              couple: {
+                $eq: santa.to
+              }
+            }
+          ]
+        }, function(err, user) {
+          resolveLen = resolveLen + 1;
+          if (user) {
+            found = true;
+          }
+          if (resolveLen === santasLen) {
+            resolve(found);
+          }
+        });
+      }
+    });
+  })
+
+  oWait.then((found) => {
+    if (found) {
+      return res.status(500).json({
+        status: "Couple found!"
+      });
+    } else {
+      return res.status(200).json({
+        status: "Success! Count: " + santasLen
       });
     }
-    // return res.status(200).json({
-    //   status: "Success! Count: " + santas.length
-    // });
-  });
+  })
 });
 
 function getRandomUserForSanta(santa, callback) {
-  Santa.find({}, function(err, santas) {
-    // searching for users than already have santa
-    var haveSanta = [];
-    if (santas) {
-      haveSanta = santas.map(function(santaFound) {
-        return santaFound.to;
-      });
-    }
+  Santa.find({})
+    .then((santas) => {
+      // searching for users than already have santa
+      var haveSanta = [];
+      if (santas) {
+        haveSanta = santas.map(function(santaFound) {
+          return santaFound.to;
+        });
+      }
 
-    User.find({
-        $and: [{
-            _id: {
-              $ne: santa._id
+      User.find({
+          $and: [{
+              _id: {
+                $ne: santa._id
+              }
+            },
+            {
+              _id: {
+                $nin: haveSanta
+              }
             }
-          },
-          {
-            _id: {
-              $nin: haveSanta
+          ]
+        })
+        .then(((users) => {
+          if (users) {
+            var user = null;
+
+            // there's only one user left
+            if (users.length === 1) {
+              callback(null, users[0]);
+              return;
             }
-          }
-        ]
-      },
-      function(err, users) {
-        if (err) {
-          return callback(err);
-        }
-        if (users) {
-          var user = null;
 
-          // there's only one user left
-          if (users.length === 1) {
-            callback(null, users[0]);
-            return;
-          }
+            // last user has no santa, nor recipient
+            if (users.length === 2) {
+              // console.log("Last two: ")
+              for (var i = 0; i < users.length; i++) {
+                var userLast = users[i];
+                let found = false;
 
-          // last user has no santa, nor recipient
-          if (users.length === 2) {
-            for (var i = 0; i < users.length; i++) {
-              var userLast = users[i];
-              let found = false;
+                for (var j = 0; j < santas.length; j++) {
+                  // check whether last user is santa
+                  if (santas[j].from.equals(userLast._id)) {
+                    // console.log("Is santa: " + userLast.username)
+                    found = true;
+                  }
+                }
 
-              for (var j = 0; j < santas.length; j++) {
-                if (santas[j].from.equals(userLast._id)) {
-                  found = true;
+                if (!found) {
+                  user = userLast;
                 }
               }
-
-              if (!found) {
-                user = userLast;
+              if (user) {
+                callback(null, user);
+                return;
               }
             }
-            if (user) {
-              callback(null, user);
-            }
+
+            // get random
+            let stopNumber = 0;
+            do {
+              stopNumber = stopNumber + 1;
+              user = users[Math.floor(Math.random() * users.length)];
+              if (user.couple.equals(santa._id)) {
+                continue;
+              }
+              break;
+            } while (stopNumber < 500);
+
+            callback(null, user);
           }
-
-          // get random
-          let stopNumber = 0;
-          do {
-            stopNumber = stopNumber + 1;
-            user = users[Math.floor(Math.random() * users.length)];
-            if (user.couple.equals(santa._id)) {
-              continue;
-            }
-            break;
-          } while (stopNumber < 500);
-
-          callback(null, user);
-        }
-      });
-  });
+        }))
+        .catch((err) => callback(err))
+    })
+    .catch((err) => callback(err))
 }
 
 module.exports = router;

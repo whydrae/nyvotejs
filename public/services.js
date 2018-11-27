@@ -213,3 +213,42 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
     }
   }
 ]);
+
+//// Verses
+
+angular.module('myApp').factory('VerseService', ['$q', '$timeout', '$http',
+  function ($q, $timeout, $http) {
+
+    return ({
+      getMyVerse: getMyVerse,
+      setMyVerse: setMyVerse
+    });
+
+    function getMyVerse() {
+      var deferred = $q.defer();
+
+      $http.get('verse/my')
+        .then(function (response) {
+          deferred.resolve(response.data.verse)
+        })
+        .catch(function (err) {
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    }
+
+    function setMyVerse(wishText) {
+      var deferred = $q.defer();
+      $http.post('verse/set', wishText)
+        .then(function (response) {
+          deferred.resolve(response.data.verse)
+        })
+        .catch(function (err) {
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    }
+  }
+]);

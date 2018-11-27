@@ -3,8 +3,8 @@ const config = require('../config.js');
 
 mongoose.Promise = Promise;
 mongoose.connect(config.get('mongoose:uri'), {
-  useMongoClient: true,
-  promiseLibrary: global.Promise
+  promiseLibrary: global.Promise,
+  useNewUrlParser: true
 });
 
 const db = mongoose.connection;

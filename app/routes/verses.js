@@ -12,8 +12,7 @@ router.post('/', (req, res) => {
 
   if (req.body.verseText) {
     Verse.create({
-        text: req.body.verseText,
-        taken: false
+        text: req.body.verseText
       })
       .then((verse) => res.status(200).json({
         verse: verse

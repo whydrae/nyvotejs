@@ -1,17 +1,17 @@
 angular.module('myApp').controller('loginController', ['$scope', '$location', 'AuthService',
-  function ($scope, $location, AuthService) {
-    $scope.login = function () {
+  function($scope, $location, AuthService) {
+    $scope.login = function() {
       $scope.error = false;
       $scope.disabled = true;
 
       AuthService.login($scope.loginForm.username, $scope.loginForm.password)
         // handle success
-        .then(function () {
+        .then(function() {
           $location.path('/');
           $scope.disabled = false;
           $scope.loginForm = {};
         })
-        .catch(function () {
+        .catch(function() {
           $scope.error = true;
           $scope.errorMessage = "Введен неправильный пользователь или пароль";
           $scope.disabled = false;
@@ -22,20 +22,20 @@ angular.module('myApp').controller('loginController', ['$scope', '$location', 'A
 ]);
 
 angular.module('myApp').controller('logoutController', ['$scope', '$location', 'AuthService',
-  function ($scope, $location, AuthService) {
-    $scope.logout = function () {
+  function($scope, $location, AuthService) {
+    $scope.logout = function() {
       AuthService.logout()
-        .then(function () {
+        .then(function() {
           $location.path('/login');
         });
     };
   }
 ]);
 
-angular.module('myApp').controller('homeController', ['$scope', '$location', 'UserService', 'WishService',
-  function ($scope, $location, UserService, WishService) {
+angular.module('myApp').controller('homeController', ['$scope', '$location', 'UserService', 'WishService', 'VerseService',
+  function($scope, $location, UserService, WishService, VerseService) {
     UserService.userData()
-      .then(function (data) {
+      .then(function(data) {
         if (data.name) {
           $scope.UserName = data.name;
         }
@@ -43,9 +43,9 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
 
     setSantaScope();
 
-    $scope.becomeSanta = function () {
+    $scope.becomeSanta = function() {
       UserService.becomeSanta()
-        .then(function (data) {
+        .then(function(data) {
           $scope.santaError = false;
           if (data) {
             $scope.showSanta = true;
@@ -54,7 +54,7 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
             $scope.showSanta = false;
           }
         })
-        .catch(function () {
+        .catch(function() {
           $scope.santaErrorMessage = "Не удалось стать Сантой! Ты остался один :-(";
           $scope.santaError = true;
         });
@@ -62,14 +62,14 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
 
     function setSantaScope() {
       UserService.getSantaFor()
-        .then(function (data) {
+        .then(function(data) {
           if (data) {
             $scope.ForName = data.forname;
           }
         });
 
       UserService.isSanta()
-        .then(function (data) {
+        .then(function(data) {
           if (data) {
             $scope.showSanta = data;
           } else {
@@ -79,27 +79,39 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
     }
 
     WishService.getMyWishes()
-      .then(function (data) {
+      .then(function(data) {
         $scope.myWishes = data;
       });
 
     WishService.getForWishes()
-      .then(function (data) {
+      .then(function(data) {
         $scope.forWishes = data;
       });
 
-    $scope.addWish = function () {
+    $scope.addWish = function() {
       WishService.addWish($scope.formData)
-        .then(function (data) {
+        .then(function(data) {
           $scope.myWishes = data;
           $scope.formData = {};
         });
     };
 
-    $scope.removeWish = function (id) {
+    $scope.removeWish = function(id) {
       WishService.removeWish(id)
-        .then(function (data) {
+        .then(function(data) {
           $scope.myWishes = data;
+        });
+    };
+
+    VerseService.getMyVerse()
+      .then(function(data) {
+        $scope.myVerse = data;
+      });
+
+    $scope.setMyVerse = function() {
+      VerseService.setMyVerse()
+        .then(function(data) {
+          $scope.myVerse = data;
         });
     };
   }
