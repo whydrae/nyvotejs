@@ -47,7 +47,9 @@
     </table>
   </div>
   <div class="row text-center" ng-if="showSanta === false">
-    <button type="button" ng-click="becomeSanta()" class="btn btn-primary btn-lg">Стать Сантой</button>
+    <button type="button" ng-click="becomeSanta()" class="btn btn-primary btn-lg">Стать Сантой
+      <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>
+    </button>
   </div>
   <div class="row">
     <h3>Твои пожелания</h3>
@@ -67,8 +69,8 @@
       <div class="form-group">
         <textarea class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required></textarea>
       </div>
-        <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
-        <div class="help-block"></div>
+      <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
+      <div class="help-block"></div>
     </form>
   </div>
 </div>
