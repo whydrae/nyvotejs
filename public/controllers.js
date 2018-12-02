@@ -106,12 +106,19 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
     VerseService.getMyVerse()
       .then(function(data) {
         $scope.myVerse = data;
+        $scope.showVerse = false;
+        if (data) {
+          $scope.showVerse = true;
+        }
       });
 
     $scope.setMyVerse = function() {
       VerseService.setMyVerse()
         .then(function(data) {
-          $scope.myVerse = data;
+          if (data) {
+            $scope.myVerse = data;
+            $scope.showVerse = true;
+          }
         });
     };
   }

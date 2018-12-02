@@ -12,7 +12,8 @@ router.post('/', (req, res) => {
 
   if (req.body.verseText) {
     Verse.create({
-        text: req.body.verseText
+        text: req.body.verseText,
+        for: null
       })
       .then((verse) => res.status(200).json({
         verse: verse
@@ -30,37 +31,36 @@ router.post('/set', (req, res) => {
     });
   }
 
-  if (req.user._id) {
-    Verse.findOne({
-        for: req.user._id
-      })
-      .then((verse) => {
-        if (verse) {
-          return res.status(200).json({
-            verse: verse
-          })
-        } else {
-          Verse.count()
-            .then((count) => {
-              const random = Math.floor(Math.random() * count)
-              return Verse.findOne().skip(random)
-            })
-            .then((verse) => {
-              verse.for = req.user._id;
-              return verse.save()
-            })
-            .then((updatedVerse) => res.status(200).json({
-              verse: updatedVerse
-            }))
-            .catch((err) => res.status(500).json({
-              err: err
-            }))
-        }
-      })
-      .catch((err) => res.status(500).json({
-        err: err
-      }))
-  }
+  // unassign verse
+  Verse.findOne({
+      for: req.user._id
+    })
+    .then((verse) => {
+      if (verse) {
+        verse.for = null;
+        verse.save()
+      }
+    })
+    .catch((err) => res.status(500).json({
+      err: err
+    }))
+
+  // assign new one
+  Verse.find({
+      for: null
+    })
+    .then((verses) => {
+      const random = Math.floor(Math.random() * verses.length)
+      const verse = verses[random];
+      verse.for = req.user._id;
+      return verse.save()
+    })
+    .then((updatedVerse) => res.status(200).json({
+      verse: updatedVerse
+    }))
+    .catch((err) => res.status(500).json({
+      err: err
+    }))
 })
 
 router.get('/my', (req, res) => {

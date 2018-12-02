@@ -7,7 +7,18 @@ table {
 }
 
 td {
-  word-wrap: break-word
+  word-wrap: break-word;
+}
+
+.verse {
+  white-space: pre-line;
+}
+
+.center {
+     position: absolute;
+     top: 50%;
+     left:50%;
+     transform: translate(-50%,-50%);
 }
 
 #snow {
@@ -24,15 +35,15 @@ td {
   bottom: 0;
   margin-top: 0;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
 }
 
 /*Keyframes*/
-
 @keyframes snow {
   0% {
     background-position: 0px 0px, 0px 0px, 0px 0px
   }
+
   100% {
     background-position: 500px 1000px, 400px 400px, 300px 300px
   }
@@ -42,6 +53,7 @@ td {
   0% {
     background-position: 0px 0px, 0px 0px, 0px 0px
   }
+
   100% {
     background-position: 500px 1000px, 400px 400px, 300px 300px
   }
@@ -51,6 +63,7 @@ td {
   0% {
     background-position: 0px 0px, 0px 0px, 0px 0px
   }
+
   100% {
     background-position: 500px 1000px, 400px 400px, 300px 300px;
   }
@@ -60,6 +73,7 @@ td {
   0% {
     background-position: 0px 0px, 0px 0px, 0px 0px
   }
+
   100% {
     background-position: 500px 1000px, 400px 400px, 300px 300px
   }
