@@ -1,16 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const isAuthenticated = require("./authenticate");
 
-var Santa = require('../models/santa');
-var Wish = require('../models/wish');
+const Santa = require('../models/santa');
+const Wish = require('../models/wish');
 
-router.get('/my', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.get('/my', isAuthenticated, function(req, res) {
   Wish.find({
       from: req.user._id
     })
@@ -22,13 +17,7 @@ router.get('/my', function(req, res) {
     }))
 });
 
-router.get('/for', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.get('/for', isAuthenticated, function(req, res) {
   Santa.findOne({
       from: req.user._id,
     })
@@ -54,13 +43,7 @@ router.get('/for', function(req, res) {
     }))
 });
 
-router.post('/', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/', isAuthenticated, function(req, res) {
   Wish.create({
       from: req.user._id,
       wish: req.body.wish
@@ -76,13 +59,7 @@ router.post('/', function(req, res) {
     }))
 });
 
-router.delete('/:wish_id', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.delete('/:wish_id', isAuthenticated, function(req, res) {
   Wish.remove({
       _id: req.params.wish_id
     })

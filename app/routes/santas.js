@@ -1,17 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const isAuthenticated = require("./authenticate");
 
 const Santa = require('../models/santa');
 const User = require('../models/user');
 const Wish = require('../models/wish');
 
-router.get('/recipient', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.get('/recipient', isAuthenticated, function(req, res) {
   Santa.findOne({
       from: req.user.id
     })
@@ -39,13 +34,7 @@ router.get('/recipient', function(req, res) {
     }))
 });
 
-router.post('/recipient', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/recipient', isAuthenticated, function(req, res) {
   Santa.findOne({
       from: req.user._id
     })
@@ -97,13 +86,7 @@ router.post('/recipient', function(req, res) {
     }))
 });
 
-router.post('/reset', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/reset', isAuthenticated, function(req, res) {
   Santa.deleteMany({})
     .then(() => Wish.deleteMany({}))
     .then(() => res.status(200).json({
@@ -114,13 +97,7 @@ router.post('/reset', function(req, res) {
     }))
 });
 
-router.post('/check', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/check', isAuthenticated, function(req, res) {
   var resolveLen = 0;
   var santasLen = 0;
 

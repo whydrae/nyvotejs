@@ -119,6 +119,10 @@ angular.module('myApp').controller('homeController', ['$scope', '$location', 'Us
             $scope.myVerse = data;
             $scope.showVerse = true;
           }
+        })
+        .catch(function() {
+          $scope.error = true;
+          $scope.errorMessage = "Произошла ошибка :( Ты знаешь кому написать.";
         });
     };
   }

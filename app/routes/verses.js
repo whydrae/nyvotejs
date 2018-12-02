@@ -1,15 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const isAuthenticated = require("./authenticate");
 
 const Verse = require('../models/verse');
 
-router.post('/', (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/', isAuthenticated, (req, res) => {
   if (req.body.verseText) {
     Verse.create({
         text: req.body.verseText,
@@ -24,13 +19,7 @@ router.post('/', (req, res) => {
   }
 })
 
-router.post('/set', (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.post('/set', isAuthenticated, (req, res) => {
   // unassign verse
   Verse.findOne({
       for: req.user._id
@@ -50,10 +39,16 @@ router.post('/set', (req, res) => {
       for: null
     })
     .then((verses) => {
-      const random = Math.floor(Math.random() * verses.length)
-      const verse = verses[random];
-      verse.for = req.user._id;
-      return verse.save()
+      if (verses.length > 0) {
+        const random = Math.floor(Math.random() * verses.length)
+        const verse = verses[random];
+        verse.for = req.user._id;
+        return verse.save()
+      } else {
+        return new Promise((resolve, reject) => {
+          reject("No verse left!");
+        })
+      }
     })
     .then((updatedVerse) => res.status(200).json({
       verse: updatedVerse
@@ -63,13 +58,7 @@ router.post('/set', (req, res) => {
     }))
 })
 
-router.get('/my', (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({
-      err: "Unauthorized"
-    });
-  }
-
+router.get('/my', isAuthenticated, (req, res) => {
   Verse.findOne({
       for: req.user._id
     })

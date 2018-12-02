@@ -20,6 +20,7 @@
 <div class="alert alert-danger" ng-if="santaError === true">
   <strong>Ошибка!</strong> {{ santaErrorMessage }}
 </div>
+<div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
 <div class="container-fluid">
   <div class="row text-center">
     <div class="panel panel-default">
