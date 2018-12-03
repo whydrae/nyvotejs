@@ -8,7 +8,7 @@ const ObjectId = mongoose.mongo.ObjectId;
 const User = require('../models/user');
 
 router.post('/register', function(req, res) {
-  const secret = config.get("admin:secret");
+  const secret = config.get("session:secret");
   if (req.body.secret && req.body.secret === secret) {
     User.register(new User({
       username: req.body.username,

@@ -97,53 +97,47 @@ router.post('/reset', isAuthenticated, function(req, res) {
     }))
 });
 
-router.post('/check', isAuthenticated, function(req, res) {
-  var resolveLen = 0;
-  var santasLen = 0;
+router.post('/check', isAuthenticated, (req, res) => {
+  const userPromises = [];
+  const santaCursor = Santa.find({}).cursor();
 
-  var oWait = new Promise((resolve, reject) => {
-    let found = false;
-    Santa.find({}, function(err, santas) {
-      santasLen = santas.length;
-      for (var i = 0; i < santas.length; i++) {
-        var santa = santas[i];
-        User.findOne({
-          $and: [{
-              _id: {
-                $eq: santa.from
-              }
-            },
-            {
-              couple: {
-                $eq: santa.to
-              }
+  santaCursor.on('data', (santa) => {
+    userPromises.push(
+      User.findOne({
+        $and: [{
+            _id: {
+              $eq: santa.from
             }
-          ]
-        }, function(err, user) {
-          resolveLen = resolveLen + 1;
-          if (user) {
-            found = true;
+          },
+          {
+            couple: {
+              $eq: santa.to
+            }
           }
-          if (resolveLen === santasLen) {
-            resolve(found);
-          }
-        });
-      }
-    });
+        ]
+      })
+    )
   })
 
-  oWait.then((found) => {
-    if (found) {
-      return res.status(500).json({
-        status: "Couple found!"
-      });
-    } else {
-      return res.status(200).json({
-        status: "Success! Count: " + santasLen
-      });
-    }
+  santaCursor.on('close', () => {
+    Promise.all(userPromises)
+      .then((users) => {
+        for (let i = 0; i < users.length; i++) {
+          if (users[i]) {
+            return res.status(500).json({
+              status: "Couple found!"
+            });
+          }
+        }
+        return res.status(200).json({
+          status: "Success! Count: " + users.length
+        });
+      })
+      .catch((err) => res.status(500).json({
+        err: err
+      }));
   })
-});
+})
 
 function getRandomUserForSanta(santa, callback) {
   Santa.find({})
