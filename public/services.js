@@ -1,5 +1,5 @@
 angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
-  function($q, $timeout, $http) {
+  function ($q, $timeout, $http) {
     var user = null;
 
     return ({
@@ -19,14 +19,14 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
 
     function getUserStatus() {
       return $http.get('/user/status')
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.status) {
             user = true;
           } else {
             user = false;
           }
         })
-        .catch(function() {
+        .catch(function () {
           user = false;
         });
     }
@@ -35,10 +35,10 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.post('/user/login', {
-          username: username,
-          password: password
-        })
-        .then(function(response) {
+        username: username,
+        password: password
+      })
+        .then(function (response) {
           if (response.status === 200 && response.data.status) {
             user = true;
             deferred.resolve();
@@ -47,7 +47,7 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
             deferred.reject();
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           user = false;
           deferred.reject(err);
         });
@@ -59,11 +59,11 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('/user/logout')
-        .then(function(response) {
+        .then(function (response) {
           user = false;
           deferred.resolve(response);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           user = false;
           deferred.reject(err);
         });
@@ -74,7 +74,7 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
 ]);
 
 angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
-  function($q, $timeout, $http) {
+  function ($q, $timeout, $http) {
     return ({
       userData: userData,
       becomeSanta: becomeSanta,
@@ -86,10 +86,10 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('user/currentUser')
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.user);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -99,10 +99,10 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
     function becomeSanta() {
       var deferred = $q.defer();
       $http.post('santa/recipient')
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -113,12 +113,12 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('santa/recipient')
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.recipient) {
             deferred.resolve(response.data.recipient);
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -129,14 +129,14 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('santa/recipient')
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.recipient) {
             deferred.resolve(true);
           } else {
             deferred.resolve(false);
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -148,12 +148,13 @@ angular.module('myApp').factory('UserService', ['$q', '$timeout', '$http',
 //// Wishes
 
 angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
-  function($q, $timeout, $http) {
+  function ($q, $timeout, $http) {
 
     return ({
       getMyWishes: getMyWishes,
       getForWishes: getForWishes,
       addWish: addWish,
+      saveWish: saveWish,
       removeWish: removeWish
     });
 
@@ -161,10 +162,10 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('wish/my')
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.wishes)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -175,10 +176,10 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('wish/for')
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.wishes)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -188,10 +189,24 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
     function addWish(wishText) {
       var deferred = $q.defer();
       $http.post('wish/', wishText)
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.wishes)
         })
-        .catch(function(err) {
+        .catch(function (err) {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    }
+
+    function saveWish(id, wishText) {
+      var deferred = $q.defer();
+
+      $http.put('wish/' + id, wishText)
+        .then(function (response) {
+          deferred.resolve(response.data.wishes)
+        })
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -202,10 +217,10 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.delete('wish/' + id)
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.wishes)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -217,7 +232,7 @@ angular.module('myApp').factory('WishService', ['$q', '$timeout', '$http',
 //// Verses
 
 angular.module('myApp').factory('VerseService', ['$q', '$timeout', '$http',
-  function($q, $timeout, $http) {
+  function ($q, $timeout, $http) {
 
     return ({
       getMyVerse: getMyVerse,
@@ -228,10 +243,10 @@ angular.module('myApp').factory('VerseService', ['$q', '$timeout', '$http',
       var deferred = $q.defer();
 
       $http.get('verse/my')
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.verse)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 
@@ -241,10 +256,10 @@ angular.module('myApp').factory('VerseService', ['$q', '$timeout', '$http',
     function setMyVerse(wishText) {
       var deferred = $q.defer();
       $http.post('verse/set', wishText)
-        .then(function(response) {
+        .then(function (response) {
           deferred.resolve(response.data.verse)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           deferred.reject(err);
         });
 

@@ -40,9 +40,11 @@
       <span class="text-success">{{ForName}}</span> для Санты</h3>
     <h4 ng-if="forWishes.length === 0">Пока что пожеланий нет...</h4>
     <table class="table table-striped">
-      <tr ng-repeat="wish in forWishes">
+      <tr ng-repeat="wish in forWishes track by wish._id">
         <td>
-          <h4>{{ wish.wish }}</h4>
+          <h4>
+            <span ng-bind-html="wish.wish | linky:'_blank'"></span>
+          </h4>
         </td>
       </tr>
     </table>
@@ -55,12 +57,19 @@
   <div class="row">
     <h3>Твои пожелания</h3>
     <table class="table table-striped">
-      <tr ng-repeat="wish in myWishes">
+      <tr ng-repeat="wish in myWishes track by wish._id">
         <td>
-          <h4>{{ wish.wish }}</h4>
+          <h4>
+            <span ng-bind-html="wish.wish | linky:'_blank'"></span>
+          </h4>
         </td>
         <td class="text-right" width="20%">
-          <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)">
+          <button type="button" class="btn btn-default" ng-if="editWishMode === false" ng-click="editWish(wish._id, wish.wish)">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+          </button>
+          <!-- <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)"> -->
+              <button type="button" class="btn btn-default" ng-really-message="Sure?" ng-really-click="removeWish(wish._id)">
+              
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
         </td>
@@ -70,7 +79,9 @@
       <div class="form-group">
         <textarea class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required></textarea>
       </div>
-      <button type="submit" class="btn btn-success btn-lg" ng-click="enterWish.$valid && addWish()">Добавить</button>
+      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === false" ng-click="enterWish.$valid && addWish()">Добавить</button>
+      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === true" ng-click="enterWish.$valid && saveWish()">Сохранить</button>
+      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === true" ng-click="cancelEdit()">Отмена</button>
       <div class="help-block"></div>
     </form>
   </div>

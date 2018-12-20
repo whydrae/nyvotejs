@@ -5,10 +5,10 @@ const isAuthenticated = require("./authenticate");
 const Santa = require('../models/santa');
 const Wish = require('../models/wish');
 
-router.get('/my', isAuthenticated, function(req, res) {
+router.get('/my', isAuthenticated, function (req, res) {
   Wish.find({
-      from: req.user._id
-    })
+    from: req.user._id
+  })
     .then((wish) => res.status(200).json({
       wishes: wish
     }))
@@ -17,15 +17,15 @@ router.get('/my', isAuthenticated, function(req, res) {
     }))
 });
 
-router.get('/for', isAuthenticated, function(req, res) {
+router.get('/for', isAuthenticated, function (req, res) {
   Santa.findOne({
-      from: req.user._id,
-    })
+    from: req.user._id,
+  })
     .then((santa) => {
       if (santa) {
         Wish.find({
-            from: santa.to
-          })
+          from: santa.to
+        })
           .then((wish) => res.status(200).json({
             wishes: wish
           }))
@@ -43,11 +43,11 @@ router.get('/for', isAuthenticated, function(req, res) {
     }))
 });
 
-router.post('/', isAuthenticated, function(req, res) {
+router.post('/', isAuthenticated, function (req, res) {
   Wish.create({
-      from: req.user._id,
-      wish: req.body.wish
-    })
+    from: req.user._id,
+    wish: req.body.wish
+  })
     .then(() => Wish.find({
       from: req.user._id
     }))
@@ -59,10 +59,33 @@ router.post('/', isAuthenticated, function(req, res) {
     }))
 });
 
-router.delete('/:wish_id', isAuthenticated, function(req, res) {
-  Wish.remove({
-      _id: req.params.wish_id
+router.put('/:wish_id', isAuthenticated, function (req, res) {
+  Wish.findByIdAndUpdate({
+    _id: req.params.wish_id
+  }, { $set: { wish: req.body.wish } })
+    .then((wish) => {
+      if (wish) {
+        return Wish.find({
+          from: req.user._id
+        })
+          .then((wish) => res.status(200).json({
+            wishes: wish
+          }))
+      } else {
+        return res.status(200).json({
+          wishes: []
+        });
+      }
     })
+    .catch((err) => res.status(500).json({
+      err: err
+    }));
+});
+
+router.delete('/:wish_id', isAuthenticated, function (req, res) {
+  Wish.deleteOne({
+    _id: req.params.wish_id
+  })
     .then(() => Wish.find({
       from: req.user._id
     }))
