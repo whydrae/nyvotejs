@@ -28,6 +28,7 @@ td {
   -moz-animation: snow 20s linear infinite;
   -ms-animation: snow 20s linear infinite;
   animation: snow 20s linear infinite;
+  transform: translate3d(0, 0, 0);
   z-index: 999;
   right: 0;
   top: 0;

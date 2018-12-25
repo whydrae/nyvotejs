@@ -67,9 +67,7 @@
           <button type="button" class="btn btn-default" ng-if="editWishMode === false" ng-click="editWish(wish._id, wish.wish)">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
           </button>
-          <!-- <button type="button" class="btn btn-default" ng-click="removeWish(wish._id)"> -->
-              <button type="button" class="btn btn-default" ng-really-message="Sure?" ng-really-click="removeWish(wish._id)">
-              
+          <button type="button" class="btn btn-default" ng-really-message="Действительно удалить?" ng-really-click="removeWish(wish._id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
         </td>
@@ -81,7 +79,7 @@
       </div>
       <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === false" ng-click="enterWish.$valid && addWish()">Добавить</button>
       <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === true" ng-click="enterWish.$valid && saveWish()">Сохранить</button>
-      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === true" ng-click="cancelEdit()">Отмена</button>
+      <button type="submit" class="btn btn-default btn-lg" ng-if="editWishMode === true" ng-click="cancelEdit()">Отмена</button>
       <div class="help-block"></div>
     </form>
   </div>

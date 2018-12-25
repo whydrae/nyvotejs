@@ -32,15 +32,49 @@ angular.module('myApp').controller('logoutController', ['$scope', '$location', '
   }
 ]);
 
-angular.module('myApp').directive('ngReallyClick', [function () {
+
+angular.module('myApp').directive('ngReallyClick', ['$uibModal', function ($uibModal) {
+  var ModalInstanceCtrl = function ($scope, $uibModalInstance) {
+    $scope.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  };
+
   return {
     restrict: 'A',
+    scope: {
+      ngReallyClick: "&",
+    },
     link: function (scope, element, attrs) {
       element.bind('click', function () {
-        var message = attrs.ngReallyMessage;
-        if (message && confirm(message)) {
-          scope.$apply(attrs.ngReallyClick);
-        }
+        var message = attrs.ngReallyMessage || "Вы уверены?";
+
+        var modalHtml = '<div class="modal-body">' + message + '</div>';
+        modalHtml = modalHtml + `
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-ng-click="ok()">Удалить</button>
+          <button class="btn btn-default" data-ng-click="cancel()">Отмена</button>
+        </div>`;
+
+        var modalInstance = $uibModal.open({
+          template: modalHtml,
+          controller: ModalInstanceCtrl
+        });
+
+        modalInstance.result.then(function () {
+          scope.ngReallyClick();
+        }, function () {
+          //Modal dismissed
+        });
+
+        // var message = attrs.ngReallyMessage;
+        // if (message && confirm(message)) {
+        //   scope.$apply(attrs.ngReallyClick);
+        // }
       });
     }
   }
