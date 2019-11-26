@@ -33,7 +33,7 @@ myApp.config(function ($routeProvider, $locationProvider) {
 });
 
 myApp.run(function ($rootScope, $location, $route, AuthService) {
-  $rootScope.$on('$routeChangeStart', function (event, next, current) {
+  $rootScope.$on('$routeChangeStart', function (event, next) {
     AuthService.getUserStatus()
       .then(function () {
         if ((!next.access || next.access.restricted) && !AuthService.isLoggedIn()) {

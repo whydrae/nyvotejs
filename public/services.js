@@ -10,11 +10,7 @@ angular.module('myApp').factory('AuthService', ['$q', '$timeout', '$http',
     });
 
     function isLoggedIn() {
-      if (user) {
-        return true;
-      } else {
-        return false;
-      }
+      return user ? true : false
     }
 
     function getUserStatus() {

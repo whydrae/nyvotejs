@@ -9,7 +9,7 @@ const path = require('path');
 
 const port = process.env.PORT || config.get('port');
 
-const db = require('./db/mongoose'); // eslint-disable-line no-unused-vars
+require('./db/mongoose');
 
 const users = require('./app/routes/users');
 const santas = require('./app/routes/santas');

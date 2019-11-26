@@ -20,12 +20,13 @@
     "nconf": "^0.10.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^5.0.1",
-    "path": "^0.12.7"
+    "passport-local-mongoose": "^5.0.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "nodemon": "^1.19.1"
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-node": "^10.0.0",
+    "nodemon": "^1.19.4"
   },
   "author": "whydrae",
   "license": "ISC"

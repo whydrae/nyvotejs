@@ -1,4 +1,6 @@
-angular.module('myApp').controller('loginController', ['$scope', '$location', 'AuthService',
+var myApp = angular.module('myApp')
+
+myApp.controller('loginController', ['$scope', '$location', 'AuthService',
   function ($scope, $location, AuthService) {
     $scope.login = function () {
       $scope.error = false;
@@ -21,7 +23,7 @@ angular.module('myApp').controller('loginController', ['$scope', '$location', 'A
   }
 ]);
 
-angular.module('myApp').controller('logoutController', ['$scope', '$location', 'AuthService',
+myApp.controller('logoutController', ['$scope', '$location', 'AuthService',
   function ($scope, $location, AuthService) {
     $scope.logout = function () {
       AuthService.logout()
@@ -32,8 +34,7 @@ angular.module('myApp').controller('logoutController', ['$scope', '$location', '
   }
 ]);
 
-
-angular.module('myApp').directive('ngReallyClick', ['$uibModal', function ($uibModal) {
+myApp.directive('ngReallyClick', ['$uibModal', function ($uibModal) {
   var ModalInstanceCtrl = function ($scope, $uibModalInstance) {
     $scope.ok = function () {
       $uibModalInstance.close();
@@ -68,19 +69,14 @@ angular.module('myApp').directive('ngReallyClick', ['$uibModal', function ($uibM
         modalInstance.result.then(function () {
           scope.ngReallyClick();
         }, function () {
-          //Modal dismissed
+          return
         });
-
-        // var message = attrs.ngReallyMessage;
-        // if (message && confirm(message)) {
-        //   scope.$apply(attrs.ngReallyClick);
-        // }
       });
     }
   }
 }]);
 
-angular.module('myApp').controller('homeController', ['$scope', '$location', 'UserService', 'WishService', 'VerseService',
+myApp.controller('homeController', ['$scope', '$location', 'UserService', 'WishService', 'VerseService',
   function ($scope, $location, UserService, WishService, VerseService) {
     UserService.userData()
       .then(function (data) {
