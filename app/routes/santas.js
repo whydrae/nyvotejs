@@ -1,44 +1,48 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const isAuthenticated = require("./authenticate");
 
-const Santa = require('../models/santa');
-const User = require('../models/user');
-const Wish = require('../models/wish');
+const Santa = require("../models/santa");
+const User = require("../models/user");
+const Wish = require("../models/wish");
 
-router.get('/recipient', isAuthenticated, function(req, res) {
+router.get("/recipient", isAuthenticated, function(req, res) {
   Santa.findOne({
-      from: req.user.id
-    })
-    .then((santa) => {
+    from: req.user.id
+  })
+    .then(santa => {
       if (santa) {
         User.findOne({
-            _id: santa.to
-          })
-          .then((user) => {
+          _id: santa.to
+        })
+          .then(user => {
             res.status(200).json({
               recipient: user
-            })
+            });
           })
-          .catch((err) => res.status(500).json({
-            err: err
-          }))
+          .catch(err =>
+            res.status(500).json({
+              err: err
+            })
+          );
       } else {
         return res.status(200).json({
           err: "You're not a santa!"
-        })
+        });
       }
     })
-    .catch((err) => res.status(500).json({
-      err: err
-    }))
+    .catch(err =>
+      res.status(500).json({
+        err: err
+      })
+    );
 });
 
-router.post('/recipient', isAuthenticated, function(req, res) {
+router.post("/recipient", isAuthenticated, function(req, res) {
   Santa.findOne({
-      from: req.user._id
-    })
-    .then((santa) => {
+    from: req.user._id
+  })
+    .then(santa => {
       if (santa) {
         return res.status(200).json({
           recipient: santa
@@ -52,10 +56,10 @@ router.post('/recipient', isAuthenticated, function(req, res) {
           }
           if (user) {
             Santa.create({
-                from: req.user._id,
-                to: user._id
-              })
-              .then((recipient) => {
+              from: req.user._id,
+              to: user._id
+            })
+              .then(recipient => {
                 if (recipient) {
                   return res.status(200).json({
                     recipient: recipient
@@ -68,9 +72,11 @@ router.post('/recipient', isAuthenticated, function(req, res) {
                   });
                 }
               })
-              .catch((err) => res.status(500).json({
-                err: err
-              }))
+              .catch(err =>
+                res.status(500).json({
+                  err: err
+                })
+              );
           } else {
             return res.status(500).json({
               err: {
@@ -81,30 +87,37 @@ router.post('/recipient', isAuthenticated, function(req, res) {
         });
       }
     })
-    .catch((err) => res.status(500).json({
-      err: err
-    }))
+    .catch(err =>
+      res.status(500).json({
+        err: err
+      })
+    );
 });
 
-router.post('/reset', isAuthenticated, function(req, res) {
+router.post("/reset", isAuthenticated, function(req, res) {
   Santa.deleteMany({})
     .then(() => Wish.deleteMany({}))
-    .then(() => res.status(200).json({
-      status: "Success!"
-    }))
-    .catch((err) => res.status(500).json({
-      err: err
-    }))
+    .then(() =>
+      res.status(200).json({
+        status: "Success!"
+      })
+    )
+    .catch(err =>
+      res.status(500).json({
+        err: err
+      })
+    );
 });
 
-router.post('/check', isAuthenticated, (req, res) => {
+router.post("/check", isAuthenticated, (req, res) => {
   const userPromises = [];
   const santaCursor = Santa.find({}).cursor();
 
-  santaCursor.on('data', (santa) => {
+  santaCursor.on("data", santa => {
     userPromises.push(
       User.findOne({
-        $and: [{
+        $and: [
+          {
             _id: {
               $eq: santa.from
             }
@@ -116,12 +129,12 @@ router.post('/check', isAuthenticated, (req, res) => {
           }
         ]
       })
-    )
-  })
+    );
+  });
 
-  santaCursor.on('close', () => {
+  santaCursor.on("close", () => {
     Promise.all(userPromises)
-      .then((users) => {
+      .then(users => {
         for (let i = 0; i < users.length; i++) {
           if (users[i]) {
             return res.status(500).json({
@@ -133,15 +146,17 @@ router.post('/check', isAuthenticated, (req, res) => {
           status: "Success! Count: " + users.length
         });
       })
-      .catch((err) => res.status(500).json({
-        err: err
-      }));
-  })
-})
+      .catch(err =>
+        res.status(500).json({
+          err: err
+        })
+      );
+  });
+});
 
 function getRandomUserForSanta(santa, callback) {
   Santa.find({})
-    .then((santas) => {
+    .then(santas => {
       // searching for users than already have santa
       var haveSanta = [];
       if (santas) {
@@ -151,19 +166,20 @@ function getRandomUserForSanta(santa, callback) {
       }
 
       User.find({
-          $and: [{
-              _id: {
-                $ne: santa._id
-              }
-            },
-            {
-              _id: {
-                $nin: haveSanta
-              }
+        $and: [
+          {
+            _id: {
+              $ne: santa._id
             }
-          ]
-        })
-        .then(((users) => {
+          },
+          {
+            _id: {
+              $nin: haveSanta
+            }
+          }
+        ]
+      })
+        .then(users => {
           if (users) {
             var user = null;
 
@@ -211,10 +227,10 @@ function getRandomUserForSanta(santa, callback) {
 
             callback(null, user);
           }
-        }))
-        .catch((err) => callback(err))
+        })
+        .catch(err => callback(err));
     })
-    .catch((err) => callback(err))
+    .catch(err => callback(err));
 }
 
 module.exports = router;

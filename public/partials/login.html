@@ -1,22 +1,41 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-4 col-md-offset-4">       
+    <div class="col-md-4 col-md-offset-4">
       <div class="panel panel-default">
         <div class="panel-heading text-center">
-            <img class="profile-img" src="../assets/img/santa.png">           
-          <!-- <h4 class="text-center"><strong>Вход</strong></h4> -->
-        </div>      
+          <img class="profile-img" src="../assets/img/santa.png" />
+        </div>
         <div class="panel-body">
           <div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
           <form class="form" ng-submit="login()">
             <div class="form-group">
-              <input type="text" class="form-control" name="username" ng-model="loginForm.username" placeholder="Пользователь" required>
+              <input
+                type="text"
+                class="form-control"
+                name="username"
+                ng-model="loginForm.username"
+                placeholder="Пользователь"
+                required
+              />
             </div>
             <div class="form-group">
-              <input type="password" class="form-control" name="password" ng-model="loginForm.password" placeholder="Пароль" required>
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                ng-model="loginForm.password"
+                placeholder="Пароль"
+                required
+              />
             </div>
             <div>
-              <button type="submit" class="btn btn-primary btn-block" ng-disabled="disabled">Войти</button>
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                ng-disabled="disabled"
+              >
+                Войти
+              </button>
             </div>
           </form>
         </div>

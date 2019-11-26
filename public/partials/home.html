@@ -1,13 +1,20 @@
-<section id="snow" ng-if="showSanta === true"></section>
+<!-- <section id="snow" ng-if="showSanta === true"></section> -->
 <nav class="navbar navbar-inverse">
   <div class="navbar-header">
-    <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+    <button
+      type="button"
+      data-target="#navbarCollapse"
+      data-toggle="collapse"
+      class="navbar-toggle"
+    >
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a href="#" class="navbar-brand"><span class="glyphicon glyphicon-tree-conifer"></span> Secret Santa </a>
+    <a href="#" class="navbar-brand"
+      ><span class="glyphicon glyphicon-tree-conifer"></span> Secret Santa
+    </a>
   </div>
   <div id="navbarCollapse" class="collapse navbar-collapse">
     <ul class="nav navbar-nav navbar-right" ng-controller="logoutController">
@@ -25,19 +32,19 @@
   <div class="row text-center">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h2>
-          <span class="text-danger">{{UserName}}</span>, привет!
+        <h2><span class="text-danger">{{UserName}}</span>, привет!</h2>
+        <h2 ng-if="showSanta === false">
+          Похоже, что ты еще не стал(а) Сантой. Самое время это сделать!
         </h2>
-        <h2 ng-if="showSanta === false">Похоже, что ты еще не стал(а) Сантой. Самое время это сделать!</h2>
         <h2 ng-if="showSanta === true">
           <span>Поздравляю, ты тайный Санта для </span>
-          <span class="text-success">{{ForName}}</span>!</h2>
+          <span class="text-success">{{forName}}</span>!
+        </h2>
       </div>
     </div>
   </div>
   <div class="row" ng-if="showSanta === true">
-    <h3>Пожелания
-      <span class="text-success">{{ForName}}</span> для Санты</h3>
+    <h3>Пожелания <span class="text-success">{{forName}}</span> для Санты</h3>
     <h4 ng-if="forWishes.length === 0">Пока что пожеланий нет...</h4>
     <table class="table table-striped">
       <tr ng-repeat="wish in forWishes track by wish._id">
@@ -50,8 +57,13 @@
     </table>
   </div>
   <div class="row text-center" ng-if="showSanta === false">
-    <button type="button" ng-click="becomeSanta()" class="btn btn-primary btn-lg">
-      <span class="glyphicon glyphicon-gift" aria-hidden="true"></span> Стать Сантой
+    <button
+      type="button"
+      ng-click="becomeSanta()"
+      class="btn btn-primary btn-lg"
+    >
+      <span class="glyphicon glyphicon-gift" aria-hidden="true"></span> Стать
+      Сантой
     </button>
   </div>
   <div class="row">
@@ -64,29 +76,70 @@
           </h4>
         </td>
         <td class="text-right" width="20%">
-          <button type="button" class="btn btn-default" ng-if="editWishMode === false" ng-click="editWish(wish._id, wish.wish)">
+          <button
+            type="button"
+            class="btn btn-default"
+            ng-if="editWishMode === false"
+            ng-click="editWish(wish._id, wish.wish)"
+          >
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
           </button>
-          <button type="button" class="btn btn-default" ng-really-message="Действительно удалить?" ng-really-click="removeWish(wish._id)">
+          <button
+            type="button"
+            class="btn btn-default"
+            ng-really-message="Действительно удалить?"
+            ng-really-click="removeWish(wish._id)"
+          >
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
         </td>
       </tr>
     </table>
+
     <form name="enterWish" class="text-center">
       <div class="form-group">
-        <textarea class="form-control input-lg" placeholder="Напиши пожелание Санте" ng-model="formData.wish" required></textarea>
+        <textarea
+          class="form-control input-lg"
+          placeholder="Напиши пожелание Санте"
+          ng-model="formData.wish"
+          required
+        ></textarea>
       </div>
-      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === false" ng-click="enterWish.$valid && addWish()">Добавить</button>
-      <button type="submit" class="btn btn-success btn-lg" ng-if="editWishMode === true" ng-click="enterWish.$valid && saveWish()">Сохранить</button>
-      <button type="submit" class="btn btn-default btn-lg" ng-if="editWishMode === true" ng-click="cancelEdit()">Отмена</button>
+      <button
+        type="submit"
+        class="btn btn-success btn-lg"
+        ng-if="editWishMode === false"
+        ng-click="enterWish.$valid && addWish()"
+      >
+        Добавить
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success btn-lg"
+        ng-if="editWishMode === true"
+        ng-click="enterWish.$valid && saveWish()"
+      >
+        Сохранить
+      </button>
+      <button
+        type="submit"
+        class="btn btn-default btn-lg"
+        ng-if="editWishMode === true"
+        ng-click="cancelEdit()"
+      >
+        Отмена
+      </button>
       <div class="help-block"></div>
     </form>
   </div>
   <div class="row" ng-if="showVerse === false">
     <div class="col-md-12 text-center">
       <h3>А тут кое-что новое</h3>
-      <button type="button" class="btn btn-primary btn-lg" ng-click="setMyVerse()">
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        ng-click="setMyVerse()"
+      >
         Нажимай
       </button>
     </div>
@@ -95,10 +148,14 @@
     <div class="col-md-12 verse text-center">
       <h3>Вот стих, который тебе нужно выучить, чтобы получить подарок :)</h3>
       <h4 class="text-primary">{{ myVerse.text }}</h4>
-      <button type="button" class="btn btn-primary btn-md" ng-click="setMyVerse()">
+      <button
+        type="button"
+        class="btn btn-primary btn-md"
+        ng-click="setMyVerse()"
+      >
         Хочу другой
       </button>
     </div>
   </div>
-  <br>
+  <br />
 </div>

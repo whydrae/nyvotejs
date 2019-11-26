@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const config = require('../config.js');
 
-mongoose.Promise = Promise;
 mongoose.connect(config.get('mongoose:uri'), {
-  promiseLibrary: global.Promise,
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
